@@ -53,12 +53,12 @@ const otherProduct = products.find((p) => p.slug !== product.slug)!;
             <div class="flex items-center gap-4">
               <p class="font-semibold">£{priceFor(size.name).toFixed(2)} <span class="text-xs font-normal text-slate-400">+VAT</span></p>
               {/*
-                TODO: replace with real Stripe Payment Link / Checkout session per size+product.
-                e.g. href={`https://buy.stripe.com/...`} or POST to a /api/checkout endpoint
-                that creates a Stripe Checkout Session for this product+size price ID.
+                TEMP: every size currently points at one Stripe TEST payment link so we can
+                verify the end-to-end checkout flow. Replace with a distinct link per
+                product+size once the real prices/payment links are created in Stripe.
               */}
               <a
-                href={`https://buy.stripe.com/REPLACE_ME_${product.slug}-${size.name.toLowerCase()}`}
+                href="https://buy.stripe.com/test_8x2eVcdsG3BI4vs15MaZi00"
                 class="inline-flex items-center rounded-full bg-blue-700 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-800 transition-colors"
               >
                 Buy now
