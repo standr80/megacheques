@@ -1,56 +1,84 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { sizes, products } from '../../data/products';
+
+const sizeIcons: Record<string, string> = { Mini: '📝', Maxi: '📋', Mega: '🏆' };
+const productIcons: Record<string, string> = { 'single-use': '✨', reusable: '♻️' };
 ---
 
 <Layout
   title="Cheque Sizes, Specs & Pricing"
   description="Compare our giant cheque sizes — Mini, Maxi and Mega — across Single Use and Reusable styles, including dimensions, materials and pricing."
 >
-  <section class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-16">
-    <h1 class="text-4xl font-extrabold tracking-tight">Cheque Sizes &amp; Specs</h1>
-    <p class="mt-4 text-slate-600">
-      Our cheques are available as single use or reusable, and in three sizes — Mini, Maxi and Mega.
-      All cheques are fully customisable with logos, payee names, custom messages and website addresses,
-      all inclusive of the price — there are no hidden extras.
-    </p>
-
-    <div class="mt-10 overflow-x-auto">
-      <table class="w-full border-collapse text-left">
-        <thead>
-          <tr class="border-b border-slate-200 text-sm uppercase tracking-wide text-slate-500">
-            <th class="py-3 pr-4">Size</th>
-            <th class="py-3 pr-4">Dimensions</th>
-            <th class="py-3 pr-4">Single Use</th>
-            <th class="py-3">Reusable</th>
-          </tr>
-        </thead>
-        <tbody>
-          {sizes.map((size) => (
-            <tr class="border-b border-slate-100">
-              <td class="py-4 pr-4 font-semibold">{size.name}</td>
-              <td class="py-4 pr-4 text-slate-600">{size.dimensions}</td>
-              <td class="py-4 pr-4">£{size.singleUsePrice.toFixed(2)} <span class="text-slate-400">+VAT</span></td>
-              <td class="py-4">£{size.reusablePrice.toFixed(2)} <span class="text-slate-400">+VAT</span></td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+  <!-- Hero -->
+  <section class="bg-gradient-to-b from-blue-50 to-white">
+    <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-16 sm:py-20 text-center">
+      <p class="text-sm font-semibold uppercase tracking-wide text-blue-700">Sizes &amp; specs</p>
+      <h1 class="mt-2 text-4xl sm:text-5xl font-extrabold tracking-tight text-slate-900">
+        Mini, Maxi or Mega — find your perfect fit
+      </h1>
+      <p class="mt-4 text-lg text-slate-600 max-w-2xl mx-auto">
+        Every cheque is fully customised with your logo, payee name, message and website address —
+        all included in the price. No hidden extras, ever.
+      </p>
     </div>
-    <p class="mt-4 text-sm text-slate-500">All of our cheques are printed with high quality materials and are both sturdy and durable.</p>
+  </section>
 
-    <h2 class="mt-14 text-2xl font-bold">Materials &amp; finish</h2>
-    <div class="mt-6 grid sm:grid-cols-2 gap-6">
-      {products.map((product) => (
-        <div class="rounded-xl border border-slate-200 p-6">
-          <h3 class="font-semibold">{product.name}</h3>
-          <p class="mt-2 text-sm text-slate-600">{product.material}</p>
+  <!-- Size cards -->
+  <section class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-16">
+    <div class="grid sm:grid-cols-3 gap-6">
+      {sizes.map((size) => (
+        <div class="rounded-2xl border border-slate-200 p-6 hover:border-blue-700 hover:shadow-md transition-all">
+          <div class="flex items-center gap-3">
+            <span class="text-3xl" aria-hidden="true">{sizeIcons[size.name]}</span>
+            <h2 class="text-xl font-bold text-slate-900">{size.name}</h2>
+          </div>
+          <p class="mt-2 text-sm text-slate-500">{size.dimensions}</p>
+          <dl class="mt-5 space-y-2 text-sm">
+            <div class="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2">
+              <dt class="text-slate-600">Single Use</dt>
+              <dd class="font-semibold">£{size.singleUsePrice.toFixed(2)} <span class="font-normal text-slate-400">+VAT</span></dd>
+            </div>
+            <div class="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2">
+              <dt class="text-slate-600">Reusable</dt>
+              <dd class="font-semibold">£{size.reusablePrice.toFixed(2)} <span class="font-normal text-slate-400">+VAT</span></dd>
+            </div>
+          </dl>
         </div>
       ))}
     </div>
+    <p class="mt-8 text-center text-sm text-slate-500">
+      All of our cheques are printed with high quality materials and are both sturdy and durable.
+    </p>
+  </section>
 
-    <div class="mt-12 text-center">
-      <a href="/products/" class="inline-flex items-center rounded-full bg-blue-700 px-6 py-3 text-base font-semibold text-white hover:bg-blue-800 transition-colors">
+  <!-- Materials -->
+  <section class="bg-slate-50 py-16">
+    <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl font-bold tracking-tight text-center">Materials &amp; finish</h2>
+      <div class="mt-10 grid sm:grid-cols-2 gap-6">
+        {products.map((product) => (
+          <div class="rounded-2xl bg-white border border-slate-200 p-8">
+            <div class="flex items-center gap-3">
+              <span class="text-3xl" aria-hidden="true">{productIcons[product.type]}</span>
+              <h3 class="text-xl font-bold text-slate-900">{product.name}</h3>
+            </div>
+            <p class="mt-4 text-slate-600">{product.material}</p>
+            <a href={`/products/${product.slug}/`} class="mt-5 inline-flex items-center text-sm font-semibold text-blue-700 hover:underline">
+              View &amp; order &rarr;
+            </a>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="bg-blue-700">
+    <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-16 text-center">
+      <h2 class="text-3xl font-bold tracking-tight text-white">Found your size? Let's get it ordered.</h2>
+      <p class="mt-3 text-blue-100">Order online in minutes, or call us on <a class="underline" href="tel:01842337100">01842 337 100</a>.</p>
+      <a href="/products/" class="mt-8 inline-flex items-center rounded-full bg-white px-6 py-3 text-base font-semibold text-blue-700 hover:bg-blue-50 transition-colors">
         Order Your Mega Cheque Now
       </a>
     </div>

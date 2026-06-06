@@ -7,59 +7,88 @@ import { company } from '../../data/products';
   title="Contact Us"
   description="Get in touch with the Mega Cheques team — call, email or send us a message about your giant cheque order."
 >
-  <section class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-16">
-    <h1 class="text-4xl font-extrabold tracking-tight">Contact Us</h1>
-    <p class="mt-4 text-slate-600">
-      Got questions or need assistance? We're here to help — reach out for personalised service and
-      make your event extraordinary.
-    </p>
+  <!-- Hero -->
+  <section class="bg-gradient-to-b from-blue-50 to-white">
+    <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-16 sm:py-20 text-center">
+      <p class="text-sm font-semibold uppercase tracking-wide text-blue-700">Get in touch</p>
+      <h1 class="mt-2 text-4xl sm:text-5xl font-extrabold tracking-tight text-slate-900">
+        Got questions? We're here to help.
+      </h1>
+      <p class="mt-4 text-lg text-slate-600 max-w-2xl mx-auto">
+        Reach out for personalised service and let's make your event extraordinary. 🎉
+      </p>
+    </div>
+  </section>
 
-    <div class="mt-10 grid sm:grid-cols-3 gap-6 text-sm">
-      <div class="rounded-xl border border-slate-200 p-5">
-        <p class="font-semibold text-slate-900">Call us</p>
-        <a class="mt-1 block text-blue-700 hover:underline" href={company.phoneHref}>{company.phone}</a>
-      </div>
-      <div class="rounded-xl border border-slate-200 p-5">
-        <p class="font-semibold text-slate-900">Email us</p>
-        <a class="mt-1 block text-blue-700 hover:underline" href={`mailto:${company.email}`}>{company.email}</a>
-      </div>
-      <div class="rounded-xl border border-slate-200 p-5">
-        <p class="font-semibold text-slate-900">Visit / write to us</p>
-        <p class="mt-1 text-slate-600">{company.legalName}<br />{company.address}</p>
+  <section class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-16 grid lg:grid-cols-5 gap-12">
+    <!-- Contact details -->
+    <div class="lg:col-span-2 space-y-6">
+      <a href={company.phoneHref} class="flex items-start gap-4 rounded-2xl border border-slate-200 p-6 hover:border-blue-700 hover:shadow-md transition-all">
+        <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-blue-50 text-2xl" aria-hidden="true">📞</span>
+        <div>
+          <p class="font-semibold text-slate-900">Call us</p>
+          <p class="mt-1 text-blue-700">{company.phone}</p>
+          <p class="mt-1 text-sm text-slate-500">Our friendly team is ready to help you choose the right cheque.</p>
+        </div>
+      </a>
+      <a href={`mailto:${company.email}`} class="flex items-start gap-4 rounded-2xl border border-slate-200 p-6 hover:border-blue-700 hover:shadow-md transition-all">
+        <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-blue-50 text-2xl" aria-hidden="true">✉️</span>
+        <div>
+          <p class="font-semibold text-slate-900">Email us</p>
+          <p class="mt-1 text-blue-700">{company.email}</p>
+          <p class="mt-1 text-sm text-slate-500">We aim to reply to all enquiries promptly.</p>
+        </div>
+      </a>
+      <div class="flex items-start gap-4 rounded-2xl border border-slate-200 p-6">
+        <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-blue-50 text-2xl" aria-hidden="true">📍</span>
+        <div>
+          <p class="font-semibold text-slate-900">Visit / write to us</p>
+          <p class="mt-1 text-slate-600">{company.legalName}<br />{company.address}</p>
+        </div>
       </div>
     </div>
 
-    <!--
-      TODO: wire up to a real form backend (e.g. Resend, Formspree, or a serverless function)
-      in place of the old WPForms plugin. This is a static placeholder.
-    -->
-    <form class="mt-12 max-w-xl space-y-4" name="contact" method="POST">
-      <div>
-        <label class="block text-sm font-medium text-slate-700" for="name">Name</label>
-        <input class="mt-1 w-full rounded-lg border border-slate-300 px-4 py-2" type="text" id="name" name="name" required />
+    <!-- Form -->
+    <div class="lg:col-span-3">
+      <div class="rounded-2xl border border-slate-200 p-8">
+        <h2 class="text-xl font-bold text-slate-900">Send us a message</h2>
+        <p class="mt-1 text-sm text-slate-500">We'll get back to you as soon as we can.</p>
+
+        <!--
+          TODO: wire up to a real form backend (e.g. Resend, Formspree, or a serverless function)
+          in place of the old WPForms plugin. This is a static placeholder.
+        -->
+        <form class="mt-6 space-y-4" name="contact" method="POST">
+          <div class="grid sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-slate-700" for="name">Name</label>
+              <input class="mt-1 w-full rounded-lg border border-slate-300 px-4 py-2 focus:border-blue-700 focus:ring-blue-700" type="text" id="name" name="name" required />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-slate-700" for="email">Email</label>
+              <input class="mt-1 w-full rounded-lg border border-slate-300 px-4 py-2 focus:border-blue-700 focus:ring-blue-700" type="email" id="email" name="email" required />
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-700" for="phone">Phone number (optional)</label>
+            <input class="mt-1 w-full rounded-lg border border-slate-300 px-4 py-2 focus:border-blue-700 focus:ring-blue-700" type="tel" id="phone" name="phone" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-700" for="message">Your message</label>
+            <textarea class="mt-1 w-full rounded-lg border border-slate-300 px-4 py-2 focus:border-blue-700 focus:ring-blue-700" id="message" name="message" rows="5" required></textarea>
+          </div>
+          <label class="flex items-start gap-2 text-sm text-slate-600">
+            <input class="mt-1" type="checkbox" name="consent" required />
+            <span>
+              I consent to {company.legalName} collecting my contact data to respond to my enquiry.
+              See our <a class="text-blue-700 hover:underline" href="/privacy/">Privacy Policy</a> for details.
+            </span>
+          </label>
+          <button type="submit" class="inline-flex items-center rounded-full bg-blue-700 px-6 py-3 text-base font-semibold text-white hover:bg-blue-800 transition-colors">
+            Send message
+          </button>
+        </form>
       </div>
-      <div>
-        <label class="block text-sm font-medium text-slate-700" for="email">Email</label>
-        <input class="mt-1 w-full rounded-lg border border-slate-300 px-4 py-2" type="email" id="email" name="email" required />
-      </div>
-      <div>
-        <label class="block text-sm font-medium text-slate-700" for="phone">Phone number (optional)</label>
-        <input class="mt-1 w-full rounded-lg border border-slate-300 px-4 py-2" type="tel" id="phone" name="phone" />
-      </div>
-      <div>
-        <label class="block text-sm font-medium text-slate-700" for="message">Your message</label>
-        <textarea class="mt-1 w-full rounded-lg border border-slate-300 px-4 py-2" id="message" name="message" rows="5" required></textarea>
-      </div>
-      <label class="flex items-start gap-2 text-sm text-slate-600">
-        <input class="mt-1" type="checkbox" name="consent" required />
-        <span>
-          I consent to {company.legalName} collecting my contact data to respond to my enquiry.
-          See our <a class="text-blue-700 hover:underline" href="/privacy/">Privacy Policy</a> for details.
-        </span>
-      </label>
-      <button type="submit" class="inline-flex items-center rounded-full bg-blue-700 px-6 py-3 text-base font-semibold text-white hover:bg-blue-800 transition-colors">
-        Send message
-      </button>
-    </form>
+    </div>
   </section>
 </Layout>
