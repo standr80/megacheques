@@ -1,0 +1,38 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { products, sizes } from '../../data/products';
+---
+
+<Layout
+  title="Shop Giant Cheques — Single Use & Reusable"
+  description="Order your custom giant cheque online. Choose Single Use or Reusable, in Mini, Maxi or Mega size. Free UK shipping and secure checkout."
+>
+  <section class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-16">
+    <div class="max-w-2xl">
+      <h1 class="text-4xl font-extrabold tracking-tight">Shop Giant Cheques</h1>
+      <p class="mt-4 text-slate-600">
+        Choose your style below, then pick a size at checkout. Every cheque is custom-printed with your
+        logo, payee name, message and website address — included in the price, with free UK shipping.
+      </p>
+    </div>
+
+    <div class="mt-12 grid sm:grid-cols-2 gap-8">
+      {products.map((product) => {
+        const fromPrice = Math.min(...sizes.map((s) => (product.type === 'single-use' ? s.singleUsePrice : s.reusablePrice)));
+        return (
+          <a href={`/products/${product.slug}/`} class="group rounded-2xl border border-slate-200 p-8 hover:border-blue-700 hover:shadow-md transition-all">
+            <p class="text-sm font-semibold uppercase tracking-wide text-blue-700">
+              {product.type === 'single-use' ? 'Single Use' : 'Reusable / Dry-Wipe'}
+            </p>
+            <h2 class="mt-2 text-2xl font-bold group-hover:text-blue-700 transition-colors">{product.name}</h2>
+            <p class="mt-3 text-slate-600">{product.tagline}</p>
+            <p class="mt-6 text-lg font-semibold">From £{fromPrice.toFixed(2)} <span class="text-sm font-normal text-slate-400">+VAT</span></p>
+            <span class="mt-4 inline-flex items-center text-sm font-semibold text-blue-700 group-hover:underline">
+              View sizes &amp; order &rarr;
+            </span>
+          </a>
+        );
+      })}
+    </div>
+  </section>
+</Layout>

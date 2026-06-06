@@ -1,0 +1,80 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { products, sizes } from '../../data/products';
+
+export function getStaticPaths() {
+  return products.map((product) => ({
+    params: { slug: product.slug },
+    props: { product },
+  }));
+}
+
+const { product } = Astro.props;
+const priceFor = (sizeName: string) =>
+  sizes.find((s) => s.name === sizeName)![product.type === 'single-use' ? 'singleUsePrice' : 'reusablePrice'];
+
+const otherProduct = products.find((p) => p.slug !== product.slug)!;
+---
+
+<Layout title={`${product.name} — Order Online`} description={product.description}>
+  <section class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-16 grid lg:grid-cols-2 gap-12">
+    <div>
+      <p class="text-sm font-semibold uppercase tracking-wide text-blue-700">
+        {product.type === 'single-use' ? 'Single Use' : 'Reusable / Dry-Wipe'}
+      </p>
+      <h1 class="mt-2 text-4xl font-extrabold tracking-tight">{product.name}</h1>
+      <p class="mt-4 text-lg text-slate-600">{product.tagline}</p>
+      <p class="mt-6 text-slate-700">{product.description}</p>
+
+      <h2 class="mt-8 text-sm font-semibold uppercase tracking-wide text-slate-500">Material &amp; finish</h2>
+      <p class="mt-2 text-slate-700">{product.material}</p>
+
+      <h2 class="mt-6 text-sm font-semibold uppercase tracking-wide text-slate-500">Best for</h2>
+      <p class="mt-2 text-slate-700">{product.bestFor}</p>
+
+      <p class="mt-8 text-sm text-slate-500">
+        Switch to: <a class="text-blue-700 hover:underline" href={`/products/${otherProduct.slug}/`}>{otherProduct.name}</a>
+      </p>
+    </div>
+
+    <div class="rounded-2xl border border-slate-200 p-8 h-fit">
+      <h2 class="text-lg font-semibold">Choose your size</h2>
+      <p class="mt-1 text-sm text-slate-500">
+        All sizes are fully customised with your logo, payee name, message and website address — included in the price.
+      </p>
+
+      <div class="mt-6 space-y-3">
+        {sizes.map((size) => (
+          <div class="flex items-center justify-between rounded-xl border border-slate-200 px-4 py-3">
+            <div>
+              <p class="font-semibold">{size.name}</p>
+              <p class="text-sm text-slate-500">{size.dimensions}</p>
+            </div>
+            <div class="flex items-center gap-4">
+              <p class="font-semibold">£{priceFor(size.name).toFixed(2)} <span class="text-xs font-normal text-slate-400">+VAT</span></p>
+              {/*
+                TODO: replace with real Stripe Payment Link / Checkout session per size+product.
+                e.g. href={`https://buy.stripe.com/...`} or POST to a /api/checkout endpoint
+                that creates a Stripe Checkout Session for this product+size price ID.
+              */}
+              <a
+                href={`https://buy.stripe.com/REPLACE_ME_${product.slug}-${size.name.toLowerCase()}`}
+                class="inline-flex items-center rounded-full bg-blue-700 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-800 transition-colors"
+              >
+                Buy now
+              </a>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <p class="mt-6 text-sm text-slate-500">
+        🔒 Secure, encrypted payment via Stripe. After checkout we'll email you to collect your logo,
+        payee name, message and any special requests, then send a proof for your approval before printing.
+      </p>
+      <p class="mt-2 text-sm text-slate-500">
+        Questions? Call <a class="text-blue-700 hover:underline" href="tel:01842337100">01842 337 100</a>.
+      </p>
+    </div>
+  </section>
+</Layout>

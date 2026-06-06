@@ -1,0 +1,65 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { company } from '../../data/products';
+---
+
+<Layout
+  title="Contact Us"
+  description="Get in touch with the Mega Cheques team — call, email or send us a message about your giant cheque order."
+>
+  <section class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-16">
+    <h1 class="text-4xl font-extrabold tracking-tight">Contact Us</h1>
+    <p class="mt-4 text-slate-600">
+      Got questions or need assistance? We're here to help — reach out for personalised service and
+      make your event extraordinary.
+    </p>
+
+    <div class="mt-10 grid sm:grid-cols-3 gap-6 text-sm">
+      <div class="rounded-xl border border-slate-200 p-5">
+        <p class="font-semibold text-slate-900">Call us</p>
+        <a class="mt-1 block text-blue-700 hover:underline" href={company.phoneHref}>{company.phone}</a>
+      </div>
+      <div class="rounded-xl border border-slate-200 p-5">
+        <p class="font-semibold text-slate-900">Email us</p>
+        <a class="mt-1 block text-blue-700 hover:underline" href={`mailto:${company.email}`}>{company.email}</a>
+      </div>
+      <div class="rounded-xl border border-slate-200 p-5">
+        <p class="font-semibold text-slate-900">Visit / write to us</p>
+        <p class="mt-1 text-slate-600">{company.legalName}<br />{company.address}</p>
+      </div>
+    </div>
+
+    <!--
+      TODO: wire up to a real form backend (e.g. Resend, Formspree, or a serverless function)
+      in place of the old WPForms plugin. This is a static placeholder.
+    -->
+    <form class="mt-12 max-w-xl space-y-4" name="contact" method="POST">
+      <div>
+        <label class="block text-sm font-medium text-slate-700" for="name">Name</label>
+        <input class="mt-1 w-full rounded-lg border border-slate-300 px-4 py-2" type="text" id="name" name="name" required />
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-slate-700" for="email">Email</label>
+        <input class="mt-1 w-full rounded-lg border border-slate-300 px-4 py-2" type="email" id="email" name="email" required />
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-slate-700" for="phone">Phone number (optional)</label>
+        <input class="mt-1 w-full rounded-lg border border-slate-300 px-4 py-2" type="tel" id="phone" name="phone" />
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-slate-700" for="message">Your message</label>
+        <textarea class="mt-1 w-full rounded-lg border border-slate-300 px-4 py-2" id="message" name="message" rows="5" required></textarea>
+      </div>
+      <label class="flex items-start gap-2 text-sm text-slate-600">
+        <input class="mt-1" type="checkbox" name="consent" required />
+        <span>
+          I consent to {company.legalName} collecting my contact data to respond to my enquiry.
+          See our <a class="text-blue-700 hover:underline" href="/privacy/">Privacy Policy</a> for details.
+        </span>
+      </label>
+      <button type="submit" class="inline-flex items-center rounded-full bg-blue-700 px-6 py-3 text-base font-semibold text-white hover:bg-blue-800 transition-colors">
+        Send message
+      </button>
+    </form>
+  </section>
+</Layout>

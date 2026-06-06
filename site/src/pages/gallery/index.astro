@@ -1,0 +1,38 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { galleryImages } from '../../data/gallery';
+---
+
+<Layout
+  title="Gallery — Giant Cheques in Action"
+  description="Browse real giant cheque presentations we've produced for charities, schools, sports clubs and businesses across the UK — including a feature on ITV's This Morning."
+>
+  <section class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-16">
+    <div class="max-w-2xl">
+      <h1 class="text-4xl font-extrabold tracking-tight">Discover Grandeur in Every Cheque</h1>
+      <p class="mt-4 text-slate-600">
+        Step into a world of oversized elegance. Browse real presentations we've produced for charities,
+        schools, sports clubs and businesses up and down the UK — including a feature on ITV's This Morning.
+      </p>
+    </div>
+
+    <div class="mt-12 columns-1 sm:columns-2 lg:columns-3 gap-4 [&>*]:mb-4">
+      {galleryImages.map((img) => (
+        <img
+          src={img.src}
+          alt={img.alt}
+          loading="lazy"
+          class="w-full rounded-xl border border-slate-200 break-inside-avoid"
+          width="600"
+          height="450"
+        />
+      ))}
+    </div>
+
+    <div class="mt-12 text-center">
+      <a href="/products/" class="inline-flex items-center rounded-full bg-blue-700 px-6 py-3 text-base font-semibold text-white hover:bg-blue-800 transition-colors">
+        Order Your Mega Cheque Now
+      </a>
+    </div>
+  </section>
+</Layout>

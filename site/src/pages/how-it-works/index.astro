@@ -1,0 +1,67 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+const steps = [
+  {
+    title: '1. Choose your cheque',
+    body: 'Pick Single Use or Reusable, and select your size — Mini, Maxi or Mega — then check out securely online.',
+  },
+  {
+    title: '2. Tell us the details',
+    body: 'We’ll email you almost instantly to collect the key details for your cheque: payee name, amount, message, logo and website address.',
+  },
+  {
+    title: '3. Approve your proof',
+    body: 'Our in-house design team creates an artwork proof of your cheque and sends it to you for feedback and sign-off.',
+  },
+  {
+    title: '4. We print & dispatch',
+    body: 'Once approved, your cheque is manufactured within 3-5 days and sent by courier (Parcelforce, APC or TNT) on a signed-for, next-working-day service.',
+  },
+];
+---
+
+<Layout
+  title="How It Works — Ordering & Delivery"
+  description="From choosing your cheque to receiving it on your doorstep: how Mega Cheques ordering, design proofing and UK delivery works."
+>
+  <section class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-16">
+    <h1 class="text-4xl font-extrabold tracking-tight">How It Works</h1>
+    <p class="mt-4 text-slate-600">
+      We've kept ordering simple and quick. Here's exactly what happens from checkout to delivery.
+    </p>
+
+    <ol class="mt-12 space-y-8">
+      {steps.map((step) => (
+        <li class="flex gap-4">
+          <div class="flex-1">
+            <h2 class="text-xl font-bold">{step.title}</h2>
+            <p class="mt-2 text-slate-600">{step.body}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
+
+    <div class="mt-14 rounded-2xl border border-slate-200 p-8">
+      <h2 class="text-xl font-bold">Delivery</h2>
+      <ul class="mt-4 space-y-2 text-slate-600 list-disc list-inside">
+        <li>Manufactured within 3-5 days of payment and artwork approval</li>
+        <li>Sent by courier — we choose from Parcelforce, APC Network and TNT depending on cheque size</li>
+        <li>24-hour next working day, signed-for delivery (Monday to Friday)</li>
+        <li>Please allow 4-5 days in total to receive your cheque</li>
+        <li>Add any delivery restrictions or special instructions in the order notes at checkout</li>
+      </ul>
+    </div>
+
+    <p class="mt-10 text-slate-600">
+      Prefer to talk it through first? Call us on <a class="text-blue-700 hover:underline" href="tel:01842337100">01842 337 100</a>
+      and one of our friendly team will help you choose the right cheque for your event.
+    </p>
+
+    <div class="mt-10">
+      <a href="/products/" class="inline-flex items-center rounded-full bg-blue-700 px-6 py-3 text-base font-semibold text-white hover:bg-blue-800 transition-colors">
+        Order Your Mega Cheque Now
+      </a>
+    </div>
+  </section>
+</Layout>

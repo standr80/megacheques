@@ -1,0 +1,33 @@
+---
+import { company } from '../data/products';
+---
+
+<footer class="border-t border-slate-200 bg-slate-50 mt-24">
+  <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-12 grid gap-8 sm:grid-cols-3">
+    <div>
+      <p class="text-lg font-extrabold text-blue-700">MegaCheques</p>
+      <p class="mt-2 text-sm text-slate-600">
+        Giant novelty cheques for fundraising, charity presentations and prize-giving — by {company.legalName}.
+      </p>
+    </div>
+    <div>
+      <p class="text-sm font-semibold text-slate-900">Contact</p>
+      <ul class="mt-2 space-y-1 text-sm text-slate-600">
+        <li><a class="hover:text-blue-700" href={company.phoneHref}>{company.phone}</a></li>
+        <li><a class="hover:text-blue-700" href={`mailto:${company.email}`}>{company.email}</a></li>
+        <li>{company.address}</li>
+      </ul>
+    </div>
+    <div>
+      <p class="text-sm font-semibold text-slate-900">Legal</p>
+      <ul class="mt-2 space-y-1 text-sm text-slate-600">
+        <li><a class="hover:text-blue-700" href="/terms/">Terms &amp; Conditions</a></li>
+        <li><a class="hover:text-blue-700" href="/privacy/">Privacy Policy</a></li>
+        <li><a class="hover:text-blue-700" href="/cookies/">Cookies</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="border-t border-slate-200 py-4 text-center text-xs text-slate-500">
+    &copy; {new Date().getFullYear()} {company.legalName}, trading as Mega Cheques. All rights reserved.
+  </div>
+</footer>
