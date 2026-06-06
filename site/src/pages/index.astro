@@ -2,46 +2,32 @@
 import Layout from '../layouts/Layout.astro';
 import { sizes } from '../data/products';
 
+// Real cheque photography from the original site — re-host locally before launch
+// (see crawl-output/images.json for the full asset list).
+const img = {
+  hero: 'https://i0.wp.com/www.megacheques.co.uk/wp-content/uploads/2023/11/Oversized-Cheques.png?resize=1080%2C1080&ssl=1',
+  uses: 'https://i0.wp.com/www.megacheques.co.uk/wp-content/uploads/2023/11/Mega-Cheque-Uses-1.png?resize=500%2C356&ssl=1',
+  sizes: 'https://i0.wp.com/www.megacheques.co.uk/wp-content/uploads/2023/11/Mega-Cheque-Sizes.png?resize=450%2C450&ssl=1',
+  singleUse: 'https://i0.wp.com/www.megacheques.co.uk/wp-content/uploads/2023/11/Single-Use-Cheque.png?resize=500%2C375&ssl=1',
+  reusable: 'https://i0.wp.com/www.megacheques.co.uk/wp-content/uploads/2023/11/Reuseable-Mega-Cheque-removebg-preview.png?resize=450%2C450&ssl=1',
+  reasonsBanner: 'https://i0.wp.com/www.megacheques.co.uk/wp-content/uploads/2023/11/smallcheque.png?resize=800%2C494&ssl=1',
+  t1: 'https://i0.wp.com/www.megacheques.co.uk/wp-content/uploads/2023/11/download.jpeg?resize=150%2C150&ssl=1',
+  t2: 'https://i0.wp.com/www.megacheques.co.uk/wp-content/uploads/2023/11/download-2.jpeg?resize=150%2C150&ssl=1',
+  t3: 'https://i0.wp.com/www.megacheques.co.uk/wp-content/uploads/2023/11/download-1.jpeg?resize=150%2C150&ssl=1',
+};
+
 const reasons = [
-  {
-    title: 'Big Impact',
-    body: 'Oversized cheques are a great promotional tool for any company, school or organisation.',
-  },
-  {
-    title: 'Make Size Matter',
-    body: 'Reward your charity with the exposure and awareness their cause deserves.',
-  },
-  {
-    title: 'Create Headlines',
-    body: 'Jumbo charity cheques are the perfect accessory for celebrating your fundraising efforts.',
-  },
-  {
-    title: 'Add Brand Personality',
-    body: 'Customised designs that reflect your brand will grab attention and get remembered.',
-  },
-  {
-    title: 'Free Shipping',
-    body: 'Our prices include free standard UK shipping — no hidden extras.',
-  },
+  { title: 'Use a Novelty Giant Cheque for Big Impact', body: 'Oversized cheques are a great promotional tool for any company, school or organisation.' },
+  { title: 'You Make Size Matter with a Big Cheque', body: 'Reward your charity with the exposure and awareness for their cause.' },
+  { title: 'Create Headlines!', body: 'Jumbo charity cheques are the perfect accessory to hit the headlines and celebrate your fundraising efforts.' },
+  { title: 'Add Brand Personality!', body: 'Customised large cheque designs that reflect your brand personality will grab attention.' },
+  { title: 'Free Shipping!', body: 'Our prices include free standard shipping.' },
 ];
 
 const testimonials = [
-  {
-    quote:
-      'The cheque is sturdy and had more impact than I expected — this definitely is a mega cheque! Thanks guys for such prompt service.',
-    name: 'David Munday',
-    location: 'Suffolk',
-  },
-  {
-    quote: 'Thanks for producing our cheque in such a short lead time. We can’t wait to use it and we’ll be sure to recommend you.',
-    name: 'Josie Hill',
-    location: 'London',
-  },
-  {
-    quote: 'Great quality and thanks for assisting us with a cheque for our school.',
-    name: 'Matilda Green',
-    location: 'Sheffield',
-  },
+  { quote: 'The cheque is sturdy and had more impact than I expected, this definitely is a mega cheque! Thanks guys for such prompt service.', name: 'David Munday', location: 'Suffolk', avatar: img.t1 },
+  { quote: 'Thanks for producing our cheque in such a short lead time. We can’t wait to use it and we’ll be sure to recommend you.', name: 'Josie Hill', location: 'London', avatar: img.t2 },
+  { quote: 'Great quality and thanks for assisting us with a cheque for our school.', name: 'Matilda Green', location: 'Sheffield', avatar: img.t3 },
 ];
 ---
 
@@ -57,7 +43,7 @@ const testimonials = [
           Fundraising just got <span class="text-blue-700">MEGA</span>
         </h1>
         <p class="mt-6 text-lg text-slate-600">
-          You won't get bigger than our giant novelty cheques. Custom printed for charity presentations,
+          You won't get bigger than our giant cheques! Custom printed for charity presentations,
           prize-giving awards, company charity days and fundraising events of every kind.
         </p>
         <div class="mt-8 flex flex-wrap gap-4">
@@ -70,84 +56,142 @@ const testimonials = [
         </div>
         <p class="mt-4 text-sm text-slate-500">🔒 Secure, encrypted payments via Stripe &middot; Free UK shipping</p>
       </div>
-      <div class="rounded-2xl bg-white border border-slate-200 shadow-sm p-6">
-        <p class="text-sm font-semibold text-slate-500 uppercase tracking-wide">Used for</p>
-        <ul class="mt-3 space-y-2 text-slate-700">
-          <li>🏆 Charity presentations &amp; cheque handovers</li>
-          <li>🎉 Prize-giving awards</li>
-          <li>🏢 Company charity days</li>
-          <li>📣 Fundraising events &amp; PR moments</li>
+      <div class="flex justify-center">
+        <img src={img.hero} alt="A giant oversized novelty cheque printed by Mega Cheques" class="w-full max-w-md rounded-2xl shadow-lg border border-slate-200" loading="eager" width="540" height="540" />
+      </div>
+    </div>
+  </section>
+
+  <!-- Uses -->
+  <section class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-16 grid lg:grid-cols-2 gap-12 items-center">
+    <img src={img.uses} alt="A giant cheque being presented at a charity fundraising event" class="w-full max-w-md mx-auto rounded-2xl border border-slate-200" loading="lazy" width="500" height="356" />
+    <div>
+      <h2 class="text-3xl font-bold tracking-tight">Uses for a Giant Cheque</h2>
+      <p class="mt-4 text-slate-600">
+        At Mega Cheques we supply giant cheques for charities for presentations. Our big cheques
+        are perfect for all kinds of fundraising events, charity presentations, prize giving awards
+        or company charity days. Show your chosen charity you care with a Mega Cheque!
+      </p>
+      <a href="/gallery/" class="mt-5 inline-flex items-center text-sm font-semibold text-blue-700 hover:underline">
+        See real presentations in our gallery &rarr;
+      </a>
+    </div>
+  </section>
+
+  <!-- Sizes -->
+  <section class="bg-slate-50 py-16">
+    <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-12 items-center">
+      <div class="lg:order-2">
+        <img src={img.sizes} alt="The three Mega Cheques sizes — Mini, Maxi and Mega — side by side" class="w-full max-w-md mx-auto rounded-2xl border border-slate-200 bg-white" loading="lazy" width="450" height="450" />
+      </div>
+      <div class="lg:order-1">
+        <h2 class="text-3xl font-bold tracking-tight">Big Cheque Sizes</h2>
+        <p class="mt-4 text-slate-600">
+          Go for the Mini, Maxi or the Mega — the largest presentation cheque on the web! At Mega
+          Cheques we can print to 3 sizes, ideal for making your presentation to charity. Our large,
+          novelty, giant cheques can be customised to your organisation or charity and are available
+          as a single use or dry wipe, reusable option.
+        </p>
+        <div class="mt-8 overflow-x-auto">
+          <table class="w-full border-collapse text-left text-sm">
+            <thead>
+              <tr class="border-b border-slate-200 uppercase tracking-wide text-slate-500">
+                <th class="py-2 pr-4">Size</th>
+                <th class="py-2 pr-4">Single Use</th>
+                <th class="py-2">Reusable</th>
+              </tr>
+            </thead>
+            <tbody>
+              {sizes.map((size) => (
+                <tr class="border-b border-slate-200/70">
+                  <td class="py-3 pr-4 font-semibold">{size.name}</td>
+                  <td class="py-3 pr-4">£{size.singleUsePrice.toFixed(2)} <span class="text-slate-400">+VAT</span></td>
+                  <td class="py-3">£{size.reusablePrice.toFixed(2)} <span class="text-slate-400">+VAT</span></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <a href="/cheque-sizes/" class="mt-5 inline-flex items-center text-sm font-semibold text-blue-700 hover:underline">
+          Full size &amp; spec guide &rarr;
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Single use -->
+  <section class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-16 grid lg:grid-cols-2 gap-12 items-center">
+    <img src={img.singleUse} alt="A single use giant novelty cheque, custom printed with logo and message" class="w-full max-w-md mx-auto rounded-2xl border border-slate-200" loading="lazy" width="500" height="375" />
+    <div>
+      <h2 class="text-3xl font-bold tracking-tight">Single Use Large Cheque</h2>
+      <p class="mt-4 text-slate-600">
+        The single use oversized novelty cheque is perfect for presentations for your company or
+        organisation. This can be fully branded with your colours and logo by our in-house design
+        team and is a great way to get your message across for promotion and PR for the charity
+        you are supporting.
+      </p>
+      <a href="/products/single-use-cheque/" class="mt-5 inline-flex items-center text-sm font-semibold text-blue-700 hover:underline">
+        View Single Use Cheque &amp; order &rarr;
+      </a>
+    </div>
+  </section>
+
+  <!-- Reusable -->
+  <section class="bg-slate-50 py-16">
+    <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-12 items-center">
+      <div class="lg:order-2">
+        <img src={img.reusable} alt="A reusable dry-wipe giant cheque that can be presented again and again" class="w-full max-w-md mx-auto rounded-2xl border border-slate-200 bg-white" loading="lazy" width="450" height="450" />
+      </div>
+      <div class="lg:order-1">
+        <h2 class="text-3xl font-bold tracking-tight">Reusable Jumbo Cheque</h2>
+        <p class="mt-4 text-slate-600">
+          The reusable cheque is a dry wipe version of the single jumbo cheque that works perfectly
+          for those that regularly fundraise. This oversized cheque can be printed with your logo,
+          website address and any message in a practical dry wipe covering, so the cheque can be
+          presented time and time again!
+        </p>
+        <a href="/products/reusable-cheque/" class="mt-5 inline-flex items-center text-sm font-semibold text-blue-700 hover:underline">
+          View Reusable Cheque &amp; order &rarr;
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Reasons -->
+  <section class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-16">
+    <div class="grid lg:grid-cols-2 gap-12 items-center">
+      <img src={img.reasonsBanner} alt="A presenter holding a giant novelty cheque at a charity event" class="w-full max-w-md mx-auto rounded-2xl border border-slate-200" loading="lazy" width="800" height="494" />
+      <div>
+        <h2 class="text-3xl font-bold tracking-tight">5 Reasons to Buy a Giant Cheque</h2>
+        <ul class="mt-6 space-y-5">
+          {reasons.map((reason) => (
+            <li>
+              <p class="font-semibold text-slate-900">{reason.title}</p>
+              <p class="mt-1 text-sm text-slate-600">{reason.body}</p>
+            </li>
+          ))}
         </ul>
       </div>
     </div>
   </section>
 
-  <!-- Sizes overview -->
-  <section class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-16">
-    <div class="text-center max-w-2xl mx-auto">
-      <h2 class="text-3xl font-bold tracking-tight">Mini, Maxi or Mega — your choice</h2>
-      <p class="mt-3 text-slate-600">
-        Available as a single-use printed cheque or a dry-wipe reusable cheque, in three sizes.
-        Every cheque is fully customised with your logo, payee name, message and website address —
-        all included in the price, with no hidden extras.
-      </p>
-    </div>
-    <div class="mt-10 overflow-x-auto">
-      <table class="w-full border-collapse text-left">
-        <thead>
-          <tr class="border-b border-slate-200 text-sm uppercase tracking-wide text-slate-500">
-            <th class="py-3 pr-4">Size</th>
-            <th class="py-3 pr-4">Dimensions</th>
-            <th class="py-3 pr-4">Single Use</th>
-            <th class="py-3">Reusable</th>
-          </tr>
-        </thead>
-        <tbody>
-          {sizes.map((size) => (
-            <tr class="border-b border-slate-100">
-              <td class="py-4 pr-4 font-semibold">{size.name}</td>
-              <td class="py-4 pr-4 text-slate-600">{size.dimensions}</td>
-              <td class="py-4 pr-4">£{size.singleUsePrice.toFixed(2)} <span class="text-slate-400">+VAT</span></td>
-              <td class="py-4">£{size.reusablePrice.toFixed(2)} <span class="text-slate-400">+VAT</span></td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-    <div class="mt-8 text-center">
-      <a href="/products/" class="inline-flex items-center rounded-full bg-blue-700 px-6 py-3 text-base font-semibold text-white hover:bg-blue-800 transition-colors">
-        Browse cheques &amp; order
-      </a>
-    </div>
-  </section>
-
-  <!-- Reasons -->
+  <!-- Testimonials -->
   <section class="bg-slate-50 py-16">
     <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-      <h2 class="text-3xl font-bold tracking-tight text-center">5 Reasons to Buy a Giant Cheque</h2>
-      <div class="mt-10 grid sm:grid-cols-2 lg:grid-cols-5 gap-6">
-        {reasons.map((reason) => (
-          <div class="rounded-xl bg-white border border-slate-200 p-5">
-            <p class="font-semibold text-slate-900">{reason.title}</p>
-            <p class="mt-2 text-sm text-slate-600">{reason.body}</p>
-          </div>
+      <h2 class="text-3xl font-bold tracking-tight text-center">What our customers say</h2>
+      <div class="mt-10 grid sm:grid-cols-3 gap-6">
+        {testimonials.map((t) => (
+          <figure class="rounded-xl bg-white border border-slate-200 p-6">
+            <blockquote class="text-slate-700 italic">&ldquo;{t.quote}&rdquo;</blockquote>
+            <figcaption class="mt-4 flex items-center gap-3">
+              <img src={t.avatar} alt="" aria-hidden="true" class="h-10 w-10 rounded-full object-cover" loading="lazy" width="40" height="40" />
+              <span class="text-sm font-semibold text-slate-900">
+                {t.name} <span class="font-normal text-slate-500">— {t.location}</span>
+              </span>
+            </figcaption>
+          </figure>
         ))}
       </div>
-    </div>
-  </section>
-
-  <!-- Testimonials -->
-  <section class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-16">
-    <h2 class="text-3xl font-bold tracking-tight text-center">What our customers say</h2>
-    <div class="mt-10 grid sm:grid-cols-3 gap-6">
-      {testimonials.map((t) => (
-        <figure class="rounded-xl border border-slate-200 p-6">
-          <blockquote class="text-slate-700 italic">&ldquo;{t.quote}&rdquo;</blockquote>
-          <figcaption class="mt-4 text-sm font-semibold text-slate-900">
-            {t.name} <span class="font-normal text-slate-500">— {t.location}</span>
-          </figcaption>
-        </figure>
-      ))}
     </div>
   </section>
 
