@@ -14,6 +14,20 @@ const priceFor = (sizeName: string) =>
   sizes.find((s) => s.name === sizeName)![product.type === 'single-use' ? 'singleUsePrice' : 'reusablePrice'];
 
 const otherProduct = products.find((p) => p.slug !== product.slug)!;
+
+// Stripe Payment Links — one per product × size (test mode)
+const stripeLinks: Record<string, Record<string, string>> = {
+  'single-use-cheque': {
+    Mini:  'https://buy.stripe.com/test_8x2eVcdsG3BI4vs15MaZi00',
+    Maxi:  'https://buy.stripe.com/test_8x23cudsG1tA3rocOuaZi01',
+    Mega:  'https://buy.stripe.com/test_6oU3cu74i4FM0fc9CiaZi02',
+  },
+  'reusable-cheque': {
+    Mini:  'https://buy.stripe.com/test_5kQ4gy0FU7RYaTQ6q6aZi03',
+    Maxi:  'https://buy.stripe.com/test_aFa3cuagugoud1Y29QaZi04',
+    Mega:  'https://buy.stripe.com/test_cNieVcagugou6DAcOuaZi05',
+  },
+};
 ---
 
 <Layout title={`${product.name} — Order Online`} description={product.description}>
@@ -52,13 +66,8 @@ const otherProduct = products.find((p) => p.slug !== product.slug)!;
             </div>
             <div class="flex items-center gap-4">
               <p class="font-semibold">£{priceFor(size.name).toFixed(2)} <span class="text-xs font-normal text-slate-400">+VAT</span></p>
-              {/*
-                TEMP: every size currently points at one Stripe TEST payment link so we can
-                verify the end-to-end checkout flow. Replace with a distinct link per
-                product+size once the real prices/payment links are created in Stripe.
-              */}
               <a
-                href="https://buy.stripe.com/test_8x2eVcdsG3BI4vs15MaZi00"
+                href={stripeLinks[product.slug][size.name]}
                 class="inline-flex items-center rounded-full bg-blue-700 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-800 transition-colors"
               >
                 Buy now
