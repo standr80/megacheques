@@ -21,7 +21,7 @@ const SIZE_DIMENSIONS: Record<string, string> = {
 };
 
 export const POST: APIRoute = async ({ request, url }) => {
-  const { STRIPE_SECRET_KEY, STRIPE_TAX_RATE_ID } = import.meta.env;
+  const { STRIPE_SECRET_KEY, STRIPE_TAX_RATE_ID } = process.env;
 
   if (!STRIPE_SECRET_KEY || !STRIPE_TAX_RATE_ID) {
     return new Response(JSON.stringify({ error: 'Server misconfiguration' }), {
