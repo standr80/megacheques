@@ -2,6 +2,8 @@
 import Layout from '../../layouts/Layout.astro';
 import { products, sizes } from '../../data/products';
 
+export const prerender = true;
+
 export function getStaticPaths() {
   return products.map((product) => ({
     params: { slug: product.slug },
@@ -14,20 +16,6 @@ const priceFor = (sizeName: string) =>
   sizes.find((s) => s.name === sizeName)![product.type === 'single-use' ? 'singleUsePrice' : 'reusablePrice'];
 
 const otherProduct = products.find((p) => p.slug !== product.slug)!;
-
-// Stripe Payment Links — one per product × size (test mode)
-const stripeLinks: Record<string, Record<string, string>> = {
-  'single-use-cheque': {
-    Mini:  'https://buy.stripe.com/test_8x2eVcdsG3BI4vs15MaZi00',
-    Maxi:  'https://buy.stripe.com/test_8x23cudsG1tA3rocOuaZi01',
-    Mega:  'https://buy.stripe.com/test_6oU3cu74i4FM0fc9CiaZi02',
-  },
-  'reusable-cheque': {
-    Mini:  'https://buy.stripe.com/test_5kQ4gy0FU7RYaTQ6q6aZi03',
-    Maxi:  'https://buy.stripe.com/test_aFa3cuagugoud1Y29QaZi04',
-    Mega:  'https://buy.stripe.com/test_cNieVcagugou6DAcOuaZi05',
-  },
-};
 ---
 
 <Layout title={`${product.name} — Order Online`} description={product.description}>
@@ -66,20 +54,22 @@ const stripeLinks: Record<string, Record<string, string>> = {
             </div>
             <div class="flex items-center gap-4">
               <p class="font-semibold">£{priceFor(size.name).toFixed(2)} <span class="text-xs font-normal text-slate-400">+VAT</span></p>
-              <a
-                href={stripeLinks[product.slug][size.name]}
-                class="inline-flex items-center rounded-full bg-blue-700 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-800 transition-colors"
+              <button
+                data-product={product.slug}
+                data-size={size.name}
+                class="buy-btn inline-flex items-center rounded-full bg-blue-700 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-800 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
               >
                 Buy now
-              </a>
+              </button>
             </div>
           </div>
         ))}
       </div>
 
       <p class="mt-6 text-sm text-slate-500">
-        🔒 Secure, encrypted payment via Stripe. After checkout we'll email you to collect your logo,
-        payee name, message and any special requests, then send a proof for your approval before printing.
+        🔒 Secure, encrypted payment via Stripe. VAT will be added at checkout. After payment we'll
+        email you to collect your logo, payee name, message and any special requests, then send a
+        proof for your approval before printing.
       </p>
       <p class="mt-2 text-sm text-slate-500">
         Questions? Call <a class="text-blue-700 hover:underline" href="tel:01842337100">01842 337 100</a>.
@@ -87,3 +77,38 @@ const stripeLinks: Record<string, Record<string, string>> = {
     </div>
   </section>
 </Layout>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('.buy-btn').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const product = btn.dataset.product!;
+      const size    = btn.dataset.size!;
+
+      // Disable all buttons while redirecting
+      document.querySelectorAll<HTMLButtonElement>('.buy-btn').forEach((b) => {
+        b.disabled = true;
+        if (b === btn) b.textContent = 'Redirecting…';
+      });
+
+      try {
+        const res = await fetch('/api/checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ product, size }),
+        });
+
+        if (!res.ok) throw new Error('Checkout request failed');
+
+        const { url } = await res.json();
+        window.location.href = url;
+      } catch (err) {
+        console.error(err);
+        alert('Sorry, something went wrong starting checkout. Please try again or call us on 01842 337 100.');
+        document.querySelectorAll<HTMLButtonElement>('.buy-btn').forEach((b) => {
+          b.disabled = false;
+          b.textContent = 'Buy now';
+        });
+      }
+    });
+  });
+</script>

@@ -1,0 +1,32 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout
+  title="Order Confirmed — Thank You!"
+  description="Your Mega Cheques order has been placed. We will be in touch shortly with your design proof."
+>
+  <section class="mx-auto max-w-2xl px-4 sm:px-6 lg:px-8 py-24 text-center">
+    <div class="text-6xl mb-6">🎉</div>
+    <h1 class="text-4xl font-extrabold tracking-tight text-slate-900">Order confirmed!</h1>
+    <p class="mt-4 text-lg text-slate-600">
+      Thank you for your order. You should receive a payment confirmation email from Stripe shortly.
+    </p>
+    <div class="mt-8 rounded-2xl border border-blue-200 bg-blue-50 p-6 text-left">
+      <h2 class="font-semibold text-slate-900">What happens next?</h2>
+      <ol class="mt-3 space-y-2 text-sm text-slate-700">
+        <li>1. We'll email you to collect the details for your cheque — payee name, amount, message and logo.</li>
+        <li>2. Our in-house design team will create an artwork proof and send it to you for sign-off.</li>
+        <li>3. Once you approve the proof, we'll print and dispatch your cheque within 3-5 days.</li>
+        <li>4. Delivery is by signed-for courier — you'll receive tracking details by email.</li>
+      </ol>
+    </div>
+    <p class="mt-6 text-sm text-slate-500">
+      Questions? Call us on <a class="text-blue-700 hover:underline" href="tel:01842337100">01842 337 100</a>
+      or email <a class="text-blue-700 hover:underline" href="mailto:office@eventstuff.ltd">office@eventstuff.ltd</a>.
+    </p>
+    <a href="/" class="mt-8 inline-flex items-center rounded-full border border-slate-300 px-6 py-3 text-base font-semibold text-slate-700 hover:border-blue-700 hover:text-blue-700 transition-colors">
+      Back to home
+    </a>
+  </section>
+</Layout>
