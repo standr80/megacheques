@@ -80,7 +80,7 @@ export const POST: APIRoute = async ({ request, url }) => {
     custom_fields: [
       {
         key: 'cheque_details',
-        label: { type: 'custom', custom: 'Payee name, amount & any message (we will confirm the design with you)' },
+        label: { type: 'custom', custom: 'Payee name, amount & message' },
         type: 'text',
         optional: true,
       },
