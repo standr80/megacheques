@@ -13,6 +13,9 @@ site/.astro/
 # crawl output (large, regenerable via crawl.js)
 crawl-output/
 
+# original image downloads (large, regenerable via download-images.sh)
+site/public/images/_originals/
+
 # macOS
 .DS_Store
 
