@@ -13,19 +13,27 @@ import { galleryImages } from '../../data/gallery';
       <p class="mt-4 text-slate-600">
         Step into a world of oversized elegance. Browse real presentations we've produced for charities,
         schools, sports clubs and businesses up and down the UK — including a feature on ITV's This Morning.
+        Click any photo to view it full size.
       </p>
     </div>
 
     <div class="mt-12 columns-1 sm:columns-2 lg:columns-3 gap-4 [&>*]:mb-4">
-      {galleryImages.map((img) => (
-        <img
-          src={img.src}
-          alt={img.alt}
-          loading="lazy"
-          class="w-full rounded-xl border border-slate-200 break-inside-avoid"
-          width="600"
-          height="450"
-        />
+      {galleryImages.map((img, i) => (
+        <button
+          type="button"
+          class="gallery-item block w-full break-inside-avoid cursor-zoom-in rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-700"
+          data-index={i}
+          aria-label={`View larger: ${img.alt}`}
+        >
+          <img
+            src={img.src}
+            alt={img.alt}
+            loading="lazy"
+            class="w-full rounded-xl border border-slate-200 transition-transform duration-200 hover:scale-[1.02] hover:shadow-lg"
+            width="600"
+            height="450"
+          />
+        </button>
       ))}
     </div>
 
@@ -35,4 +43,97 @@ import { galleryImages } from '../../data/gallery';
       </a>
     </div>
   </section>
+
+  <!-- Lightbox -->
+  <div
+    id="lightbox"
+    class="fixed inset-0 z-[100] hidden items-center justify-center bg-slate-950/90 p-4"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Image viewer"
+  >
+    <button id="lb-close" type="button" aria-label="Close" class="absolute top-4 right-4 z-10 rounded-full bg-white/10 p-3 text-white hover:bg-white/25 transition-colors">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+    </button>
+    <button id="lb-prev" type="button" aria-label="Previous image" class="absolute left-2 sm:left-6 z-10 rounded-full bg-white/10 p-3 text-white hover:bg-white/25 transition-colors">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg>
+    </button>
+    <button id="lb-next" type="button" aria-label="Next image" class="absolute right-2 sm:right-6 z-10 rounded-full bg-white/10 p-3 text-white hover:bg-white/25 transition-colors">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+    </button>
+    <figure class="flex max-h-full max-w-5xl flex-col items-center">
+      <img id="lb-image" src="" alt="" class="max-h-[80vh] w-auto max-w-full rounded-lg object-contain shadow-2xl" />
+      <figcaption id="lb-caption" class="mt-4 text-center text-sm text-slate-200"></figcaption>
+      <p id="lb-counter" class="mt-1 text-xs text-slate-400"></p>
+    </figure>
+  </div>
 </Layout>
+
+<script>
+  const items = [...document.querySelectorAll<HTMLButtonElement>('.gallery-item')];
+  const sources = items.map((b) => {
+    const img = b.querySelector('img')!;
+    return { src: img.src, alt: img.alt };
+  });
+
+  const lightbox = document.getElementById('lightbox')!;
+  const lbImage = document.getElementById('lb-image') as HTMLImageElement;
+  const lbCaption = document.getElementById('lb-caption')!;
+  const lbCounter = document.getElementById('lb-counter')!;
+  let current = 0;
+  let lastFocus: HTMLElement | null = null;
+
+  function show(i: number) {
+    current = (i + sources.length) % sources.length;
+    const { src, alt } = sources[current];
+    lbImage.src = src;
+    lbImage.alt = alt;
+    lbCaption.textContent = alt;
+    lbCounter.textContent = `${current + 1} of ${sources.length}`;
+    // Preload neighbours for snappy next/prev
+    [current + 1, current - 1].forEach((n) => {
+      new Image().src = sources[(n + sources.length) % sources.length].src;
+    });
+  }
+
+  function open(i: number) {
+    lastFocus = document.activeElement as HTMLElement;
+    show(i);
+    lightbox.classList.remove('hidden');
+    lightbox.classList.add('flex');
+    document.body.style.overflow = 'hidden';
+    document.getElementById('lb-close')!.focus();
+  }
+
+  function close() {
+    lightbox.classList.add('hidden');
+    lightbox.classList.remove('flex');
+    document.body.style.overflow = '';
+    lastFocus?.focus();
+  }
+
+  items.forEach((btn) => btn.addEventListener('click', () => open(Number(btn.dataset.index))));
+  document.getElementById('lb-close')!.addEventListener('click', close);
+  document.getElementById('lb-prev')!.addEventListener('click', () => show(current - 1));
+  document.getElementById('lb-next')!.addEventListener('click', () => show(current + 1));
+
+  // Close when clicking the dark backdrop (not the image or controls)
+  lightbox.addEventListener('click', (e) => {
+    if (e.target === lightbox) close();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (lightbox.classList.contains('hidden')) return;
+    if (e.key === 'Escape') close();
+    if (e.key === 'ArrowLeft') show(current - 1);
+    if (e.key === 'ArrowRight') show(current + 1);
+  });
+
+  // Basic swipe support for touch devices
+  let touchX = 0;
+  lightbox.addEventListener('touchstart', (e) => (touchX = e.touches[0].clientX), { passive: true });
+  lightbox.addEventListener('touchend', (e) => {
+    const dx = e.changedTouches[0].clientX - touchX;
+    if (Math.abs(dx) > 50) show(current + (dx < 0 ? 1 : -1));
+  }, { passive: true });
+</script>
