@@ -16,9 +16,38 @@ const priceFor = (sizeName: string) =>
   sizes.find((s) => s.name === sizeName)![product.type === 'single-use' ? 'singleUsePrice' : 'reusablePrice'];
 
 const otherProduct = products.find((p) => p.slug !== product.slug)!;
+
+const productSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Product',
+  name: product.name,
+  description: product.description,
+  image: 'https://www.megacheques.co.uk/images/mega-big-cheque.webp',
+  brand: { '@type': 'Brand', name: 'Mega Cheques' },
+  offers: sizes.map((size) => ({
+    '@type': 'Offer',
+    name: `${size.name} (${size.dimensions})`,
+    url: `https://www.megacheques.co.uk/products/${product.slug}/`,
+    priceCurrency: 'GBP',
+    price: priceFor(size.name).toFixed(2),
+    priceSpecification: {
+      '@type': 'UnitPriceSpecification',
+      price: priceFor(size.name).toFixed(2),
+      priceCurrency: 'GBP',
+      valueAddedTaxIncluded: false,
+    },
+    availability: 'https://schema.org/InStock',
+    shippingDetails: {
+      '@type': 'OfferShippingDetails',
+      shippingRate: { '@type': 'MonetaryAmount', value: 0, currency: 'GBP' },
+      shippingDestination: { '@type': 'DefinedRegion', addressCountry: 'GB' },
+    },
+  })),
+};
 ---
 
 <Layout title={`${product.name} — Order Online`} description={product.description}>
+  <script type="application/ld+json" set:html={JSON.stringify(productSchema)} />
   <section class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-16 grid lg:grid-cols-2 gap-12">
     <div>
       <p class="text-sm font-semibold uppercase tracking-wide text-blue-700">

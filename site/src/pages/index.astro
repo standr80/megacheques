@@ -1,6 +1,25 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { sizes } from '../data/products';
+import { sizes, company } from '../data/products';
+
+const businessSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'LocalBusiness',
+  name: company.name,
+  legalName: company.legalName,
+  url: 'https://www.megacheques.co.uk',
+  logo: 'https://www.megacheques.co.uk/images/mega-cheques-logo-blue.webp',
+  image: 'https://www.megacheques.co.uk/images/mega-big-cheque.webp',
+  telephone: '+441842337100',
+  email: company.email,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: 'Unit 11 Napier Place, Stephenson Way Industrial Estate',
+    addressLocality: 'Thetford',
+    postalCode: 'IP24 3RL',
+    addressCountry: 'GB',
+  },
+};
 
 // Real cheque photography from the original site — re-host locally before launch
 // (see crawl-output/images.json for the full asset list).
@@ -35,6 +54,7 @@ const testimonials = [
   title="Giant Novelty Cheques for Charity & Fundraising Presentations"
   description="Custom-printed giant cheques in three sizes — single use or reusable dry-wipe — perfect for charity presentations, prize-giving and fundraising events. Free UK shipping, fast turnaround."
 >
+  <script type="application/ld+json" set:html={JSON.stringify(businessSchema)} />
   <!-- Hero -->
   <section class="bg-gradient-to-b from-blue-50 to-white">
     <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-16 sm:py-24 grid lg:grid-cols-2 gap-12 items-center">
