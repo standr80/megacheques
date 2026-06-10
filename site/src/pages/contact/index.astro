@@ -54,11 +54,12 @@ import { company } from '../../data/products';
         <h2 class="text-xl font-bold text-slate-900">Send us a message</h2>
         <p class="mt-1 text-sm text-slate-500">We'll get back to you as soon as we can.</p>
 
-        <!--
-          TODO: wire up to a real form backend (e.g. Resend, Formspree, or a serverless function)
-          in place of the old WPForms plugin. This is a static placeholder.
-        -->
-        <form class="mt-6 space-y-4" name="contact" method="POST">
+        <form id="contact-form" class="mt-6 space-y-4" name="contact" method="POST">
+          <!-- Honeypot: hidden from humans, bots fill it in -->
+          <div class="hidden" aria-hidden="true">
+            <label for="website">Website</label>
+            <input type="text" id="website" name="website" tabindex="-1" autocomplete="off" />
+          </div>
           <div class="grid sm:grid-cols-2 gap-4">
             <div>
               <label class="block text-sm font-medium text-slate-700" for="name">Name</label>
@@ -84,11 +85,50 @@ import { company } from '../../data/products';
               See our <a class="text-blue-700 hover:underline" href="/privacy/">Privacy Policy</a> for details.
             </span>
           </label>
-          <button type="submit" class="inline-flex items-center rounded-full bg-blue-700 px-6 py-3 text-base font-semibold text-white hover:bg-blue-800 transition-colors">
+          <button type="submit" class="inline-flex items-center rounded-full bg-blue-700 px-6 py-3 text-base font-semibold text-white hover:bg-blue-800 transition-colors disabled:opacity-60 disabled:cursor-not-allowed">
             Send message
           </button>
+          <p id="form-status" class="text-sm hidden" role="status"></p>
         </form>
       </div>
     </div>
   </section>
 </Layout>
+
+<script>
+  const form = document.getElementById('contact-form') as HTMLFormElement;
+  const status = document.getElementById('form-status') as HTMLParagraphElement;
+  const button = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    button.disabled = true;
+    button.textContent = 'Sending…';
+    status.classList.add('hidden');
+
+    const data = Object.fromEntries(new FormData(form).entries());
+
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.error || 'Something went wrong.');
+
+      form.reset();
+      status.textContent = "Thanks — your message has been sent. We'll be in touch soon.";
+      status.className = 'text-sm text-green-700';
+      button.textContent = 'Send message';
+    } catch (err) {
+      status.textContent =
+        (err instanceof Error && err.message) ||
+        'Sorry, something went wrong. Please email or call us instead.';
+      status.className = 'text-sm text-red-600';
+      button.textContent = 'Send message';
+    } finally {
+      button.disabled = false;
+    }
+  });
+</script>

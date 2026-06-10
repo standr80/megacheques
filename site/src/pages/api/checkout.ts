@@ -33,10 +33,13 @@ export const POST: APIRoute = async ({ request, url }) => {
   let product: string;
   let size: string;
 
+  let quantity: number;
+
   try {
     const body = await request.json();
     product = body.product;
     size = body.size;
+    quantity = Number.parseInt(String(body.quantity ?? 1), 10);
   } catch {
     return new Response(JSON.stringify({ error: 'Invalid request body' }), {
       status: 400,
@@ -47,6 +50,13 @@ export const POST: APIRoute = async ({ request, url }) => {
   const unitAmount = PRICES[product]?.[size];
   if (!unitAmount) {
     return new Response(JSON.stringify({ error: 'Invalid product or size' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+
+  if (!Number.isInteger(quantity) || quantity < 1 || quantity > 25) {
+    return new Response(JSON.stringify({ error: 'Invalid quantity' }), {
       status: 400,
       headers: { 'Content-Type': 'application/json' },
     });
@@ -69,10 +79,17 @@ export const POST: APIRoute = async ({ request, url }) => {
               'Custom printed giant novelty cheque. After checkout we will email you to collect your logo, payee name, message and any special requests, then send a proof for your approval before printing.',
           },
         },
-        quantity: 1,
+        quantity,
+        adjustable_quantity: { enabled: true, minimum: 1, maximum: 25 },
         tax_rates: [STRIPE_TAX_RATE_ID],
       },
     ],
+    custom_text: {
+      shipping_address: {
+        message:
+          'Free standard UK delivery included — 24hr signed-for courier once your proof is approved.',
+      },
+    },
     billing_address_collection: 'required',
     shipping_address_collection: {
       allowed_countries: ['GB'],

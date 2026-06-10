@@ -45,7 +45,17 @@ const otherProduct = products.find((p) => p.slug !== product.slug)!;
         All sizes are fully customised with your logo, payee name, message and website address — included in the price.
       </p>
 
-      <div class="mt-6 space-y-3">
+      <div class="mt-6 flex items-center gap-3">
+        <label for="quantity" class="text-sm font-medium text-slate-700">Quantity</label>
+        <select id="quantity" class="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-700 focus:ring-blue-700">
+          {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
+            <option value={n}>{n}</option>
+          ))}
+        </select>
+        <span class="text-xs text-slate-400">Need more? Call us for volume pricing.</span>
+      </div>
+
+      <div class="mt-4 space-y-3">
         {sizes.map((size) => (
           <div class="flex items-center justify-between rounded-xl border border-slate-200 px-4 py-3">
             <div>
@@ -66,7 +76,10 @@ const otherProduct = products.find((p) => p.slug !== product.slug)!;
         ))}
       </div>
 
-      <p class="mt-6 text-sm text-slate-500">
+      <p class="mt-6 text-sm font-medium text-slate-700">
+        🚚 Free standard UK delivery included — 24hr signed-for courier once your proof is approved.
+      </p>
+      <p class="mt-2 text-sm text-slate-500">
         🔒 Secure, encrypted payment via Stripe. VAT will be added at checkout. After payment we'll
         email you to collect your logo, payee name, message and any special requests, then send a
         proof for your approval before printing.
@@ -81,8 +94,9 @@ const otherProduct = products.find((p) => p.slug !== product.slug)!;
 <script>
   document.querySelectorAll<HTMLButtonElement>('.buy-btn').forEach((btn) => {
     btn.addEventListener('click', async () => {
-      const product = btn.dataset.product!;
-      const size    = btn.dataset.size!;
+      const product  = btn.dataset.product!;
+      const size     = btn.dataset.size!;
+      const quantity = parseInt((document.getElementById('quantity') as HTMLSelectElement).value, 10) || 1;
 
       // Disable all buttons while redirecting
       document.querySelectorAll<HTMLButtonElement>('.buy-btn').forEach((b) => {
@@ -94,7 +108,7 @@ const otherProduct = products.find((p) => p.slug !== product.slug)!;
         const res = await fetch('/api/checkout', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ product, size }),
+          body: JSON.stringify({ product, size, quantity }),
         });
 
         if (!res.ok) throw new Error('Checkout request failed');
