@@ -90,6 +90,7 @@ export const POST: APIRoute = async ({ request, url }) => {
           'Free standard UK delivery included — 24hr signed-for courier once your proof is approved.',
       },
     },
+    phone_number_collection: { enabled: true },
     billing_address_collection: 'required',
     shipping_address_collection: {
       allowed_countries: ['GB'],
