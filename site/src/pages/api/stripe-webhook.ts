@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
 import Stripe from 'stripe';
-import { sendNotification, escapeHtml } from '../../lib/email';
+import { sendNotification, sendEmail, escapeHtml } from '../../lib/email';
 
 export const prerender = false; // server-rendered endpoint
 
@@ -86,6 +86,39 @@ export const POST: APIRoute = async ({ request }) => {
       replyTo: session.customer_details?.email ?? undefined,
     });
     if (!sent) console.error('Order notification email failed for session', session.id);
+
+    // Branded order confirmation to the customer
+    const customerEmail = session.customer_details?.email;
+    if (customerEmail) {
+      const firstName = (session.customer_details?.name ?? '').split(' ')[0] || 'there';
+      const customerHtml = `
+        <div style="font-family:Arial,Helvetica,sans-serif;max-width:560px;margin:0 auto;color:#0f172a">
+          <h2 style="color:#1d4ed8">Thank you for your order!</h2>
+          <p>Hi ${escapeHtml(firstName)},</p>
+          <p>We've received your order and payment of
+            <strong>£${((session.amount_total ?? 0) / 100).toFixed(2)}</strong> (inc VAT):</p>
+          ${itemsHtml}
+          <p><strong>What happens next:</strong></p>
+          <ol>
+            <li>We'll email you shortly to collect the details for your cheque — payee name, amount, message and your logo.</li>
+            <li>Our design team will prepare a proof for your approval before anything is printed.</li>
+            <li>Once approved, your cheque is printed within 3–5 working days.</li>
+            <li>Delivery is free, by 24-hour signed-for courier — tracking details will be emailed to you.</li>
+          </ol>
+          <p>Questions in the meantime? Call us on <a href="tel:01842337100">01842 337 100</a>
+            or reply to this email.</p>
+          <p>Thanks,<br>The Mega Cheques team<br>
+            <span style="color:#64748b;font-size:13px">Event Stuff Ltd · Unit 11 Napier Place, Thetford IP24 3RL</span></p>
+        </div>
+      `;
+      const confirmed = await sendEmail({
+        to: customerEmail,
+        subject: 'Your Mega Cheques order is confirmed 🎉',
+        html: customerHtml,
+        replyTo: process.env.CONTACT_TO ?? 'office@eventstuff.ltd',
+      });
+      if (!confirmed) console.error('Customer confirmation email failed for session', session.id);
+    }
   }
 
   return new Response('ok', { status: 200 });
