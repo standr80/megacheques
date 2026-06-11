@@ -1,0 +1,51 @@
+---
+// Shown only when GA is configured and the visitor hasn't made a choice yet.
+// Works with Google Consent Mode: analytics cookies stay denied until accepted.
+---
+
+<div
+  id="cookie-banner"
+  class="fixed bottom-4 left-4 right-4 sm:left-auto sm:max-w-md z-[90] hidden rounded-2xl border border-slate-200 bg-white p-5 shadow-xl"
+  role="region"
+  aria-label="Cookie consent"
+>
+  <p class="text-sm text-slate-700">
+    We use cookies to understand how visitors use our site, which helps us improve it.
+    See our <a href="/cookies/" class="text-blue-700 hover:underline">cookie policy</a>.
+  </p>
+  <div class="mt-4 flex gap-3">
+    <button
+      id="cookie-accept"
+      type="button"
+      class="inline-flex items-center rounded-full bg-blue-700 px-5 py-2 text-sm font-semibold text-white hover:bg-blue-800 transition-colors"
+    >
+      Accept
+    </button>
+    <button
+      id="cookie-decline"
+      type="button"
+      class="inline-flex items-center rounded-full border border-slate-300 px-5 py-2 text-sm font-semibold text-slate-700 hover:border-blue-700 hover:text-blue-700 transition-colors"
+    >
+      Decline
+    </button>
+  </div>
+</div>
+
+<script>
+  const banner = document.getElementById('cookie-banner')!;
+  const choice = localStorage.getItem('cookie-consent');
+  const gaEnabled = !!(window as any).__gaId;
+
+  if (gaEnabled && !choice) banner.classList.remove('hidden');
+
+  function decide(granted: boolean) {
+    localStorage.setItem('cookie-consent', granted ? 'granted' : 'denied');
+    banner.classList.add('hidden');
+    if (granted && typeof (window as any).gtag === 'function') {
+      (window as any).gtag('consent', 'update', { analytics_storage: 'granted' });
+    }
+  }
+
+  document.getElementById('cookie-accept')!.addEventListener('click', () => decide(true));
+  document.getElementById('cookie-decline')!.addEventListener('click', () => decide(false));
+</script>
