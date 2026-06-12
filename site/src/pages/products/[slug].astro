@@ -28,6 +28,8 @@ const productSchema = {
     '@type': 'Offer',
     name: `${size.name} (${size.dimensions})`,
     url: `https://www.megacheques.co.uk/products/${product.slug}/`,
+    sku: `MC-${product.type === 'single-use' ? 'SU' : 'RU'}-${size.name.toUpperCase()}`,
+    mpn: `MC-${product.type === 'single-use' ? 'SU' : 'RU'}-${size.name.toUpperCase()}`,
     priceCurrency: 'GBP',
     price: priceFor(size.name).toFixed(2),
     priceSpecification: {
@@ -41,6 +43,18 @@ const productSchema = {
       '@type': 'OfferShippingDetails',
       shippingRate: { '@type': 'MonetaryAmount', value: 0, currency: 'GBP' },
       shippingDestination: { '@type': 'DefinedRegion', addressCountry: 'GB' },
+      deliveryTime: {
+        '@type': 'ShippingDeliveryTime',
+        handlingTime: { '@type': 'QuantitativeValue', minValue: 3, maxValue: 5, unitCode: 'DAY' },
+        transitTime: { '@type': 'QuantitativeValue', minValue: 1, maxValue: 1, unitCode: 'DAY' },
+      },
+    },
+    // Personalised goods: exempt from UK 14-day distance-selling cancellation
+    // rights, so no returns offered (statutory faulty-goods rights unaffected).
+    hasMerchantReturnPolicy: {
+      '@type': 'MerchantReturnPolicy',
+      applicableCountry: 'GB',
+      returnPolicyCategory: 'https://schema.org/MerchantReturnNotPermitted',
     },
   })),
 };
