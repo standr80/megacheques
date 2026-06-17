@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
 import { sendNotification, escapeHtml } from '../../lib/email';
+import { sendLeadToCrm } from '../../lib/crm';
 
 export const prerender = false; // server-rendered endpoint
 
@@ -45,11 +46,17 @@ export const POST: APIRoute = async ({ request }) => {
     <p>${escapeHtml(message).replace(/\n/g, '<br>')}</p>
   `;
 
-  const ok = await sendNotification({
-    subject: `Website enquiry from ${name}`,
-    html,
-    replyTo: email,
-  });
+  // Email (primary) and CRM lead push run together. The CRM call is non-fatal:
+  // its result doesn't affect what the visitor sees, so a CRM outage never
+  // blocks an enquiry.
+  const [ok] = await Promise.all([
+    sendNotification({
+      subject: `Website enquiry from ${name}`,
+      html,
+      replyTo: email,
+    }),
+    sendLeadToCrm({ name, email, phone, message, source: 'megacheques.co.uk', form: 'megacheques-contact' }),
+  ]);
 
   return ok
     ? json({ ok: true })
