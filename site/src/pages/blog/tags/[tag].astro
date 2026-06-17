@@ -1,0 +1,33 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import BlogList from '../../../components/BlogList.astro';
+import { getAllPosts, topTags, groupByTag } from '../../../lib/nblb';
+
+const ACCENT = '#1d4ed8';
+
+export async function getStaticPaths() {
+  const posts = await getAllPosts();
+  return groupByTag(posts).map((g) => ({
+    params: { tag: g.slug },
+    props: { tag: g.tag, slug: g.slug, posts: g.posts, allTags: topTags(posts) },
+  }));
+}
+
+const { tag, slug, posts, allTags } = Astro.props as {
+  tag: string;
+  slug: string;
+  posts: import('../../../lib/nblb').PostSummary[];
+  allTags: import('../../../lib/nblb').TagCount[];
+};
+---
+
+<Layout title={tag} description={`Articles about ${tag} from the Mega Cheques team.`}>
+  <div style="background:#1d4ed8" class="text-white">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
+      <p class="text-white/70 text-sm font-semibold uppercase tracking-wide">Topic</p>
+      <h1 class="text-4xl sm:text-5xl font-extrabold">{tag}</h1>
+    </div>
+  </div>
+
+  <BlogList posts={posts} tags={allTags} activeSlug={slug} accent={ACCENT} />
+</Layout>

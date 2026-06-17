@@ -1,0 +1,117 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getAllPosts, getPost, type Post } from '../../lib/nblb';
+
+const SITE_URL = 'https://www.megacheques.co.uk';
+const SITE_TITLE = 'Mega Cheques';
+const ACCENT = '#1d4ed8';
+
+export async function getStaticPaths() {
+  const summaries = await getAllPosts();
+  const posts = await Promise.all(summaries.map((s) => getPost(s.slug)));
+  return posts
+    .filter((p): p is Post => !!p)
+    .map((post) => ({ params: { slug: post.slug }, props: { post } }));
+}
+
+const { post } = Astro.props as { post: Post };
+
+const canonical = `${SITE_URL}/blog/${post.slug}/`;
+const description = post.meta_description || post.excerpt || '';
+const image = post.hero_image || undefined;
+const fmt = (d: string) =>
+  d ? new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
+
+const hasAuthor = !!post.author && post.author !== 'Clem';
+const authorNode = hasAuthor
+  ? {
+      '@type': 'Person',
+      name: post.author,
+      ...(post.author_title ? { jobTitle: post.author_title } : {}),
+      ...(post.author_links?.length ? { sameAs: post.author_links.map((l) => l.url) } : {}),
+    }
+  : { '@type': 'Organization', name: 'Event Stuff Ltd', url: `${SITE_URL}/` };
+
+const blogPosting = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: post.title,
+  description,
+  ...(image ? { image } : {}),
+  datePublished: post.published_at || undefined,
+  dateModified: post.updated_at || post.published_at || undefined,
+  author: authorNode,
+  publisher: {
+    '@type': 'Organization',
+    name: SITE_TITLE,
+    logo: { '@type': 'ImageObject', url: `${SITE_URL}/images/mega-cheques-logo-blue.webp` },
+  },
+  mainEntityOfPage: { '@type': 'WebPage', '@id': canonical },
+  ...(post.tags?.length ? { keywords: post.tags.join(', ') } : {}),
+};
+---
+
+<Layout
+  title={post.title}
+  description={description}
+  ogType="article"
+  ogImage={image}
+  publishedTime={post.published_at || undefined}
+  modifiedTime={post.updated_at || post.published_at || undefined}
+  schema={[blogPosting]}
+>
+  <article class="max-w-3xl mx-auto px-4 sm:px-6 py-10" style={`--acc:${ACCENT}`}>
+    <header class="mb-6">
+      <h1 class="text-3xl sm:text-4xl font-extrabold leading-tight text-slate-900">{post.title}</h1>
+      <p class="text-sm text-slate-500 mt-3">
+        {hasAuthor && <span class="font-semibold text-slate-700">By {post.author}{post.author_title ? `, ${post.author_title}` : ''} · </span>}
+        <time datetime={post.published_at?.slice(0, 10)}>{fmt(post.published_at)}</time>
+      </p>
+    </header>
+
+    {post.hero_image && (
+      <img src={post.hero_image} alt={post.hero_image_alt || post.title} width="1200" height="630" loading="eager" class="w-full rounded-2xl shadow-md mb-8" />
+    )}
+
+    <div class="post-body" set:html={post.body_html} />
+
+    {hasAuthor && (post.author_bio || post.author_links?.length > 0) && (
+      <div class="author-box">
+        <p class="an">{post.author}{post.author_title && <span> · {post.author_title}</span>}</p>
+        {post.author_bio && <p class="ab">{post.author_bio}</p>}
+        {post.author_links?.length > 0 && (
+          <p class="al">
+            {post.author_links.map((l) => (
+              <a href={l.url} target="_blank" rel="noopener noreferrer me">{l.label || l.url}</a>
+            ))}
+          </p>
+        )}
+      </div>
+    )}
+
+    <p class="mt-10">
+      <a href="/blog/" style={`color:${ACCENT}`} class="font-semibold hover:underline">← All articles</a>
+    </p>
+  </article>
+</Layout>
+
+<style>
+  .post-body { font-size: 1.05rem; line-height: 1.7; color: #1e293b; }
+  .post-body > * + * { margin-top: 1.1em; }
+  .post-body h2 { font-size: 1.5rem; font-weight: 700; margin-top: 1.8em; line-height: 1.25; }
+  .post-body h3 { font-size: 1.2rem; font-weight: 700; margin-top: 1.5em; }
+  .post-body ul, .post-body ol { padding-left: 1.4em; }
+  .post-body li { margin: .3em 0; }
+  .post-body a { color: var(--acc, #1d4ed8); text-decoration: underline; }
+  .post-body img { max-width: 100%; height: auto; border-radius: 10px; }
+  .post-body blockquote { border-left: 3px solid var(--acc, #1d4ed8); margin: 1.4em 0; padding: .2em 1em; color: #475569; }
+  .post-body code { background: #f1f5f9; padding: .1em .35em; border-radius: 4px; font-size: .9em; }
+  .post-body table { border-collapse: collapse; width: 100%; font-size: .95em; }
+  .post-body th, .post-body td { border: 1px solid rgba(0,0,0,.12); padding: .5em .7em; text-align: left; }
+  .author-box { margin-top: 2.5rem; padding: 1.25rem 1.5rem; border: 1px solid rgba(0,0,0,.1); border-left: 3px solid var(--acc, #1d4ed8); border-radius: 10px; background: rgba(0,0,0,.02); }
+  .author-box .an { font-weight: 700; margin: 0 0 .35rem; }
+  .author-box .an span { font-weight: 500; opacity: .6; }
+  .author-box .ab { font-size: .9rem; line-height: 1.6; opacity: .8; margin: 0 0 .5rem; }
+  .author-box .al { margin: 0; display: flex; gap: 1rem; flex-wrap: wrap; }
+  .author-box .al a { font-size: .85rem; color: var(--acc, #1d4ed8); text-decoration: underline; }
+</style>

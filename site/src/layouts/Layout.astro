@@ -7,10 +7,30 @@ import CookieBanner from '../components/CookieBanner.astro';
 interface Props {
   title: string;
   description: string;
+  /** Extra JSON-LD blocks (e.g. BlogPosting on blog posts) */
+  schema?: object[];
+  /** "website" (default) or "article" for blog posts */
+  ogType?: string;
+  /** Override the default OG/Twitter image */
+  ogImage?: string;
+  /** ISO timestamps — emitted as article:published_time / modified_time */
+  publishedTime?: string;
+  modifiedTime?: string;
 }
 
-const { title, description } = Astro.props;
+const {
+  title,
+  description,
+  schema = [],
+  ogType = 'website',
+  ogImage,
+  publishedTime,
+  modifiedTime,
+} = Astro.props;
 const canonical = new URL(Astro.url.pathname, 'https://www.megacheques.co.uk');
+const ogImageUrl = ogImage
+  ? new URL(ogImage, 'https://www.megacheques.co.uk').href
+  : 'https://www.megacheques.co.uk/images/mega-big-cheque.webp';
 
 // GA4: set PUBLIC_GA_ID (e.g. G-XXXXXXXXXX) in Vercel env vars to enable.
 // Loads in Consent Mode — analytics cookies denied until the visitor accepts
@@ -27,11 +47,18 @@ const GA_ID = import.meta.env.PUBLIC_GA_ID;
     <link rel="canonical" href={canonical} />
     <title>{title} | Mega Cheques</title>
     <meta name="description" content={description} />
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={ogType} />
     <meta property="og:title" content={`${title} | Mega Cheques`} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
-    <meta property="og:image" content="https://www.megacheques.co.uk/images/mega-big-cheque.webp" />
+    <meta property="og:image" content={ogImageUrl} />
+    {ogType === 'article' && publishedTime && <meta property="article:published_time" content={publishedTime} />}
+    {ogType === 'article' && (modifiedTime || publishedTime) && <meta property="article:modified_time" content={modifiedTime || publishedTime} />}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={`${title} | Mega Cheques`} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
+    {schema.map((s) => <script type="application/ld+json" set:html={JSON.stringify(s)} />)}
     <meta name="generator" content={Astro.generator} />
     {GA_ID && (
       <script is:inline define:vars={{ GA_ID }}>

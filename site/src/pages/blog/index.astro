@@ -1,0 +1,26 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import BlogList from '../../components/BlogList.astro';
+import { getAllPosts, topTags, PAGE_SIZE, pageCount } from '../../lib/nblb';
+
+const ACCENT = '#1d4ed8';
+
+const posts = await getAllPosts();
+const tags = topTags(posts);
+const totalPages = pageCount(posts.length);
+const pagePosts = posts.slice(0, PAGE_SIZE);
+---
+
+<Layout
+  title="Blog"
+  description="Guides, ideas and news on big cheques and novelty cheque printing from the Mega Cheques team."
+>
+  <div style="background:#1d4ed8" class="text-white">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
+      <h1 class="text-4xl sm:text-5xl font-extrabold">The Mega Cheques Blog</h1>
+      <p class="text-white/85 text-lg mt-2">Big cheque ideas, guides and inspiration</p>
+    </div>
+  </div>
+
+  <BlogList posts={pagePosts} tags={tags} page={1} totalPages={totalPages} accent={ACCENT} />
+</Layout>
