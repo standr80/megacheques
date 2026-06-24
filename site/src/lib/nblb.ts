@@ -42,9 +42,16 @@ export interface Post extends PostSummary {
   faq_jsonld?: string;
 }
 
+// Unique per build (evaluated once per build process). Appended to every
+// build-time API request so each build bypasses the Content API's edge cache
+// and always pulls the latest content — otherwise a just-published post's data
+// or schema can be missed because of a stale (stale-while-revalidate) response.
+const CACHE_BUST = Date.now();
+
 async function getJSON<T>(url: string): Promise<T | null> {
   try {
-    const res = await fetch(url, { headers: { Accept: 'application/json' } });
+    const sep = url.includes('?') ? '&' : '?';
+    const res = await fetch(`${url}${sep}cb=${CACHE_BUST}`, { headers: { Accept: 'application/json' } });
     if (!res.ok) return null;
     return (await res.json()) as T;
   } catch {
