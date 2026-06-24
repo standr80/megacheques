@@ -1,13 +1,15 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { getAllPosts, getPost, type Post } from '../../lib/nblb';
+import { getAllContent, getPost, type Post } from '../../lib/nblb';
 
 const SITE_URL = 'https://www.megacheques.co.uk';
 const SITE_TITLE = 'Mega Cheques';
 const ACCENT = '#1d4ed8';
 
+// getAllContent (not getAllPosts) so FAQ pages — which are excluded from the
+// blog feed — still get their own static /blog/<slug> page.
 export async function getStaticPaths() {
-  const summaries = await getAllPosts();
+  const summaries = await getAllContent();
   const posts = await Promise.all(summaries.map((s) => getPost(s.slug)));
   return posts
     .filter((p): p is Post => !!p)
@@ -49,6 +51,13 @@ const blogPosting = {
   mainEntityOfPage: { '@type': 'WebPage', '@id': canonical },
   ...(post.tags?.length ? { keywords: post.tags.join(', ') } : {}),
 };
+
+// FAQ pages also carry FAQPage schema (built server-side by the NBLB API) —
+// this is what wins FAQ rich results and AI-Overview citations.
+const schemas: object[] = [blogPosting];
+if (post.content_type === 'faq' && post.faq_jsonld) {
+  try { schemas.push(JSON.parse(post.faq_jsonld)); } catch { /* ignore bad JSON */ }
+}
 ---
 
 <Layout
@@ -58,7 +67,7 @@ const blogPosting = {
   ogImage={image}
   publishedTime={post.published_at || undefined}
   modifiedTime={post.updated_at || post.published_at || undefined}
-  schema={[blogPosting]}
+  schema={schemas}
 >
   <article class="max-w-3xl mx-auto px-4 sm:px-6 py-10" style={`--acc:${ACCENT}`}>
     <header class="mb-6">

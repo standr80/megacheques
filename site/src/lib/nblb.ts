@@ -37,6 +37,9 @@ export interface Post extends PostSummary {
   body_html: string;
   author_bio: string;
   author_links: AuthorLink[];
+  // FAQ pages only: content_type === 'faq' and a ready-made FAQPage JSON-LD string.
+  content_type?: string;
+  faq_jsonld?: string;
 }
 
 async function getJSON<T>(url: string): Promise<T | null> {
@@ -49,14 +52,18 @@ async function getJSON<T>(url: string): Promise<T | null> {
   }
 }
 
-/** Every published post (summaries), newest first. Resilient to API failure. */
-export async function getAllPosts(): Promise<PostSummary[]> {
+/**
+ * Fetch all post summaries of a given content type, paging through the API.
+ * `type`: 'blog' (articles, the default feed), 'faq' (FAQ pages), or 'all' (both).
+ * Resilient to API failure (returns what it has).
+ */
+async function fetchPostsByType(type: 'blog' | 'faq' | 'all'): Promise<PostSummary[]> {
   const all: PostSummary[] = [];
   let page = 1;
   let totalPages = 1;
   do {
     const data = await getJSON<{ posts: PostSummary[]; total_pages: number }>(
-      `${BASE}/posts?page=${page}&per_page=100`,
+      `${BASE}/posts?type=${type}&page=${page}&per_page=100`,
     );
     if (!data) break;
     all.push(...(data.posts ?? []));
@@ -64,6 +71,24 @@ export async function getAllPosts(): Promise<PostSummary[]> {
     page++;
   } while (page <= totalPages);
   return all;
+}
+
+/** Blog articles only (newest first) — the visible blog feed. */
+export async function getAllPosts(): Promise<PostSummary[]> {
+  return fetchPostsByType('blog');
+}
+
+/**
+ * Every piece of content (blog + FAQ). Used for prerendering /blog/[slug] so
+ * FAQ pages get static pages even though they're excluded from the blog feed.
+ */
+export async function getAllContent(): Promise<PostSummary[]> {
+  return fetchPostsByType('all');
+}
+
+/** FAQ pages only — for the /faq hub. */
+export async function getFaqPosts(): Promise<PostSummary[]> {
+  return fetchPostsByType('faq');
 }
 
 /** A single post including rendered body HTML. Null if not found/unreachable. */

@@ -1,0 +1,51 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getFaqPosts } from '../../lib/nblb';
+
+const ACCENT = '#1d4ed8';
+
+// Prerendered at build from the NBLB Content API (FAQ content type only).
+const faqs = await getFaqPosts();
+
+const fmt = (d: string) =>
+  d ? new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
+---
+
+<Layout
+  title="FAQs"
+  description="Answers to the questions we get asked most about giant cheques and novelty cheque printing."
+>
+  <div style="background:#1d4ed8" class="text-white">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
+      <h1 class="text-4xl sm:text-5xl font-extrabold">Frequently Asked Questions</h1>
+      <p class="text-white/85 text-lg mt-2">Answers to the questions our customers ask most</p>
+    </div>
+  </div>
+
+  <div class="faq-wrap" style={`--acc:${ACCENT}`}>
+    {faqs.length === 0 ? (
+      <p class="faq-empty">No FAQ pages yet — check back soon!</p>
+    ) : (
+      <div class="faq-grid">
+        {faqs.map((p) => (
+          <a class="faq-card" href={`/blog/${p.slug}/`}>
+            <h2>{p.title}</h2>
+            {p.excerpt && <p>{p.excerpt}</p>}
+            <span class="d">Updated {fmt(p.updated_at || p.published_at)}</span>
+          </a>
+        ))}
+      </div>
+    )}
+  </div>
+</Layout>
+
+<style>
+  .faq-wrap { max-width: 880px; margin: 0 auto; padding: 2.5rem 1.25rem 3.5rem; }
+  .faq-grid { display: grid; gap: 1.25rem; }
+  .faq-card { display: block; border: 1px solid rgba(0,0,0,.08); border-left: 4px solid var(--acc, #2563eb); border-radius: 12px; padding: 1.25rem 1.4rem; background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,.06); text-decoration: none; color: inherit; transition: transform .15s, box-shadow .15s; }
+  .faq-card:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(0,0,0,.1); }
+  .faq-card h2 { font-size: 1.15rem; font-weight: 700; margin: 0 0 .4rem; line-height: 1.3; }
+  .faq-card p { font-size: .9rem; opacity: .7; margin: 0 0 .6rem; }
+  .faq-card .d { font-size: .75rem; opacity: .5; }
+  .faq-empty { text-align: center; opacity: .6; padding: 2rem 0; }
+</style>
