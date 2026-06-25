@@ -104,8 +104,12 @@ if (post.content_type === 'faq' && post.faq_jsonld) {
   </article>
 </Layout>
 
-<style>
+<!-- is:global so these rules reach the raw HTML injected via set:html (Astro
+     scopes <style> by default, which never matches injected content). The
+     .post-body / .author-box classes are unique to this page, so no leakage. -->
+<style is:global>
   .post-body { font-size: 1.05rem; line-height: 1.7; color: #1e293b; }
+  .post-body h2 { margin-bottom: .5em; }
   .post-body > * + * { margin-top: 1.1em; }
   .post-body h2 { font-size: 1.5rem; font-weight: 700; margin-top: 1.8em; line-height: 1.25; }
   .post-body h3 { font-size: 1.2rem; font-weight: 700; margin-top: 1.5em; }
